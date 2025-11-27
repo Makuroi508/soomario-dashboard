@@ -2,14 +2,31 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.py",
+      "src": "api/index.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "api/index.py"
+    },
+    {
       "src": "/(.*)",
-      "dest": "server.py"
+      "dest": "api/index.py"
     }
   ]
 }
+```
+
+5. Click **"Commit changes"**
+
+---
+
+### 3. Wait for Redeploy
+
+Vercel should auto-redeploy in about 30-60 seconds. 
+
+Then test again:
+```
+https://soomario-dashboard-git-main-marcelos-projects-463b8139.vercel.app/api/health
