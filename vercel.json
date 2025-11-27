@@ -17,16 +17,3 @@
     }
   ]
 }
-```
-
-5. Click **"Commit changes"**
-
----
-
-### 3. Wait for Redeploy
-
-Vercel should auto-redeploy in about 30-60 seconds. 
-
-Then test again:
-```
-https://soomario-dashboard-git-main-marcelos-projects-463b8139.vercel.app/api/health
