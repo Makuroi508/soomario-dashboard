@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server.py"
+    }
+  ],
+  "env": {
+    "PIONEX_API_KEY": "@pionex-api-key",
+    "PIONEX_API_SECRET": "@pionex-api-secret"
+  }
+}
