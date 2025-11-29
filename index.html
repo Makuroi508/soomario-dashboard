@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Soomario Strategies – Bot Dashboard</title>
+  <title>Soomario Strategies – Bot Portfolio Dashboard</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
     body {
@@ -12,259 +12,262 @@
       background: #050711;
       color: #f5f5f5;
     }
-    .soomario-widget {
-      padding: 1.5rem;
-      max-width: 980px;
+    .wrap {
+      max-width: 1080px;
       margin: 0 auto;
+      padding: 20px;
     }
-    .soomario-layout {
+    h2 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .subtitle {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-bottom: 16px;
+    }
+    .layout {
       display: flex;
       flex-wrap: wrap;
-      gap: 1.5rem;
+      gap: 16px;
     }
-    .soomario-bot-list {
-      flex: 1 1 220px;
-      min-width: 220px;
+    .col-left {
+      flex: 0 0 240px;
+      max-width: 260px;
     }
-    .soomario-bot-list h3 {
-      margin: 0 0 0.5rem;
-      font-size: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      opacity: 0.9;
+    .col-right {
+      flex: 1 1 320px;
+      min-width: 260px;
     }
-    .soomario-group-title {
-      margin-top: 0.75rem;
-      margin-bottom: 0.25rem;
-      font-size: 0.85rem;
+    .group-title {
+      margin-top: 12px;
+      margin-bottom: 4px;
+      font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      opacity: 0.7;
+      opacity: 0.75;
     }
-    .soomario-bot {
+    .bot-row {
       display: flex;
       align-items: center;
-      gap: 0.35rem;
-      font-size: 0.9rem;
-      margin: 0.15rem 0;
+      gap: 6px;
+      font-size: 13px;
+      margin: 2px 0;
     }
-    .soomario-bot input[type="checkbox"] {
-      transform: scale(1.05);
-    }
-    .soomario-bot span {
-      opacity: 0.9;
-    }
-    .soomario-bot small {
+    .bot-row small {
+      font-size: 11px;
       opacity: 0.6;
-      font-size: 0.75rem;
     }
-    .soomario-chart-area {
-      flex: 2 1 360px;
-      min-width: 260px;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
+    .panel {
+      background: rgba(255,255,255,0.02);
+      border-radius: 10px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,0.06);
     }
     #equityChart {
       width: 100%;
       max-height: 320px;
-      background: rgba(255,255,255,0.02);
-      border-radius: 0.75rem;
-      padding: 0.5rem;
     }
-    .soomario-stats {
+    .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 0.5rem;
-      font-size: 0.85rem;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
     }
-    .soomario-stat-card {
-      padding: 0.6rem 0.75rem;
-      border-radius: 0.75rem;
-      border: 1px solid rgba(255,255,255,0.06);
+    .stat-card {
       background: rgba(255,255,255,0.02);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 8px 10px;
+      font-size: 12px;
     }
-    .soomario-stat-label {
+    .stat-label {
       text-transform: uppercase;
-      font-size: 0.7rem;
+      font-size: 10px;
+      opacity: 0.7;
       letter-spacing: 0.08em;
-      opacity: 0.65;
-      margin-bottom: 0.2rem;
+      margin-bottom: 2px;
     }
-    .soomario-stat-value {
-      font-size: 0.98rem;
+    .stat-value {
+      font-size: 14px;
       font-weight: 600;
     }
-    .soomario-stat-sub {
-      font-size: 0.75rem;
-      opacity: 0.6;
+    .stat-sub {
+      font-size: 11px;
+      opacity: 0.7;
     }
-    .soomario-warning {
-      font-size: 0.78rem;
-      opacity: 0.65;
-      margin-top: 0.4rem;
-    }
-    .soomario-invest {
-      margin-top: 0.6rem;
-      font-size: 0.85rem;
+    .invest-row {
+      margin-top: 10px;
+      font-size: 12px;
       display: flex;
       flex-wrap: wrap;
+      gap: 10px;
       align-items: center;
-      gap: 0.75rem;
     }
-    .soomario-invest label {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .soomario-invest input[type="number"] {
+    .invest-row input {
       background: rgba(0,0,0,0.3);
+      border-radius: 6px;
       border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 0.5rem;
-      padding: 0.25rem 0.5rem;
+      padding: 3px 6px;
       color: #fff;
-      max-width: 130px;
+      width: 110px;
     }
-    .soomario-invest-output {
-      opacity: 0.8;
+    .invest-output {
+      opacity: 0.85;
+      font-size: 12px;
     }
-    @media (max-width: 640px) {
-      .soomario-widget {
-        padding: 1rem;
+    .disclaimer {
+      font-size: 11px;
+      opacity: 0.65;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+    @media (max-width: 720px) {
+      .col-left {
+        flex: 1 1 100%;
+        max-width: none;
+      }
+      .col-right {
+        flex: 1 1 100%;
       }
     }
   </style>
 </head>
 <body>
-  <section class="soomario-widget">
-    <div class="soomario-layout">
+  <div class="wrap">
+    <h2>Build Your Bot Mix</h2>
+    <div class="subtitle">
+      Backtests only. Portfolio is equally weighted across selected bots.  
+      DCA engines are designed for spot / 1× exposure.
+    </div>
 
-      <div class="soomario-bot-list">
-        <h3>Build Your Bot Mix</h3>
-        <div class="soomario-warning">
-          Backtests only. Equal-weighted. DCA bots are <strong>spot/1×</strong> engines.
-        </div>
+    <div class="layout">
+      <!-- LEFT: bot selection -->
+      <div class="col-left panel">
+        <div class="group-title">Reversal (10% SL, leverage-friendly)</div>
 
-        <div class="soomario-group-title">Reversal (10% SL, leverage-friendly)</div>
-
-        <label class="soomario-bot">
-          <input type="checkbox" class="bot-toggle" value="HYPE_rev" checked>
+        <label class="bot-row">
+          <input type="checkbox" class="bot-toggle" value="HYPE_rev" checked />
           <span>HYPE 4h Reversal</span>
           <small>(HYPE_rev)</small>
         </label>
 
-        <label class="soomario-bot">
-          <input type="checkbox" class="bot-toggle" value="LTC_rev" checked>
+        <label class="bot-row">
+          <input type="checkbox" class="bot-toggle" value="LTC_rev" checked />
           <span>LTC 4h Reversal</span>
           <small>(LTC_rev)</small>
         </label>
 
-        <label class="soomario-bot">
-          <input type="checkbox" class="bot-toggle" value="LINK_rev">
+        <label class="bot-row">
+          <input type="checkbox" class="bot-toggle" value="LINK_rev" />
           <span>LINK 4h Reversal</span>
           <small>(LINK_rev)</small>
         </label>
 
-        <label class="soomario-bot">
-          <input type="checkbox" class="bot-toggle" value="CRV_rev">
+        <label class="bot-row">
+          <input type="checkbox" class="bot-toggle" value="CRV_rev" />
           <span>CRV 4h Reversal</span>
           <small>(CRV_rev)</small>
         </label>
 
-        <label class="soomario-bot">
-          <input type="checkbox" class="bot-toggle" value="PUMP_rev">
+        <label class="bot-row">
+          <input type="checkbox" class="bot-toggle" value="PUMP_rev" />
           <span>PUMP 4h Reversal</span>
           <small>(PUMP_rev)</small>
         </label>
 
-        <div class="soomario-group-title">DCA Smoothers (Spot / 1× only)</div>
+        <div class="group-title">DCA Smoothers (Spot / 1× only)</div>
 
-        <label class="soomario-bot">
-          <input type="checkbox" class="bot-toggle" value="SOL_DCA">
+        <label class="bot-row">
+          <input type="checkbox" class="bot-toggle" value="SOL_DCA" />
           <span>SOL DCA Engine</span>
           <small>(SOL_DCA)</small>
         </label>
 
-        <label class="soomario-bot">
-          <input type="checkbox" class="bot-toggle" value="LTC_DCA">
+        <label class="bot-row">
+          <input type="checkbox" class="bot-toggle" value="LTC_DCA" />
           <span>LTC DCA Engine</span>
           <small>(LTC_DCA)</small>
         </label>
 
-        <label class="soomario-bot">
-          <input type="checkbox" class="bot-toggle" value="BNB_DCA">
+        <label class="bot-row">
+          <input type="checkbox" class="bot-toggle" value="BNB_DCA" />
           <span>BNB DCA Engine</span>
           <small>(BNB_DCA)</small>
         </label>
 
-        <label class="soomario-bot">
-          <input type="checkbox" class="bot-toggle" value="ETH_DCA">
+        <label class="bot-row">
+          <input type="checkbox" class="bot-toggle" value="ETH_DCA" />
           <span>ETH DCA Engine</span>
           <small>(ETH_DCA)</small>
         </label>
 
-        <label class="soomario-bot">
-          <input type="checkbox" class="bot-toggle" value="ZEC_DCA">
+        <label class="bot-row">
+          <input type="checkbox" class="bot-toggle" value="ZEC_DCA" />
           <span>ZEC DCA Engine</span>
           <small>(ZEC_DCA)</small>
         </label>
       </div>
 
-      <div class="soomario-chart-area">
-        <canvas id="equityChart"></canvas>
+      <!-- RIGHT: chart + stats + calculator -->
+      <div class="col-right">
+        <div class="panel">
+          <canvas id="equityChart"></canvas>
 
-        <div class="soomario-stats">
-          <div class="soomario-stat-card">
-            <div class="soomario-stat-label">Total Return</div>
-            <div class="soomario-stat-value" id="stat-total">–</div>
-            <div class="soomario-stat-sub">From start of common window</div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total Return</div>
+              <div class="stat-value" id="stat-total">–</div>
+              <div class="stat-sub">Common backtest window</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Max Drawdown</div>
+              <div class="stat-value" id="stat-dd">–</div>
+              <div class="stat-sub">Closed-equity curve</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Annualized</div>
+              <div class="stat-value" id="stat-ann">–</div>
+              <div class="stat-sub">Backtest extrapolated</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Sharpe (approx)</div>
+              <div class="stat-value" id="stat-sharpe">–</div>
+              <div class="stat-sub">Daily returns, rf ≈ 0</div>
+            </div>
           </div>
-          <div class="soomario-stat-card">
-            <div class="soomario-stat-label">Max Drawdown</div>
-            <div class="soomario-stat-value" id="stat-dd">–</div>
-            <div class="soomario-stat-sub">Closed equity only</div>
-          </div>
-          <div class="soomario-stat-card">
-            <div class="soomario-stat-label">Annualized</div>
-            <div class="soomario-stat-value" id="stat-ann">–</div>
-            <div class="soomario-stat-sub">Backtest extrapolated</div>
-          </div>
-          <div class="soomario-stat-card">
-            <div class="soomario-stat-label">Sharpe (approx)</div>
-            <div class="soomario-stat-value" id="stat-sharpe">–</div>
-            <div class="soomario-stat-sub">Daily returns, rf ≈ 0</div>
-          </div>
-        </div>
 
-        <div class="soomario-invest">
-          <label>
-            Starting capital (USDT)
-            <input id="start-capital" type="number" value="10000" min="0" step="100" />
-          </label>
-          <div class="soomario-invest-output" id="invest-output">–</div>
-        </div>
+          <div class="invest-row">
+            <label>
+              Starting capital (USDT)
+              <input id="start-capital" type="number" value="10000" min="0" step="100" />
+            </label>
+            <div class="invest-output" id="invest-output">–</div>
+          </div>
 
-        <div class="soomario-warning">
-          Portfolio = equally weighted across selected bots.<br>
-          Results are <strong>backtests</strong>, not live PnL. Real performance will differ.
+          <div class="disclaimer">
+            Portfolio = equal-weighted across selected bots. Results are backtests, not live PnL.  
+            DCA engines assume spot / 1×; using leverage on DCA can lead to liquidation.
+          </div>
         </div>
       </div>
-
     </div>
-  </section>
+  </div>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Big JSON from Python -->
+  <!-- Bot data generated by build_botdata.py -->
   <script src="botData.js"></script>
 
   <script>
-    // Safety: make sure botData exists
+    // ---- helpers for working with botData ----
     if (typeof botData === "undefined") {
-      console.error("botData is not defined. Check that botData.js is loading.");
+      console.error("botData is not defined – check that botData.js exists next to index.html");
     } else {
-      // Ensure each bot's dates are sorted and attach helper info
+      // ensure each bot has sorted dates
       Object.keys(botData).forEach(name => {
         const bot = botData[name];
         const zipped = bot.dates.map((d, i) => ({ d, e: bot.equity[i] }));
@@ -275,18 +278,15 @@
     }
 
     function getSelectedBots() {
-      const checkboxes = document.querySelectorAll('.bot-toggle');
       const selected = [];
-      checkboxes.forEach(cb => {
-        if (cb.checked && typeof botData !== "undefined" && botData[cb.value]) {
-          selected.push(cb.value);
-        }
+      document.querySelectorAll(".bot-toggle").forEach(cb => {
+        if (cb.checked && botData[cb.value]) selected.push(cb.value);
       });
       return selected;
     }
 
-    // Binary search: last index where dates[idx] <= target
-    function findLastIndexLE(dates, target) {
+    // binary search: last index where date <= target
+    function lastIndexLE(dates, target) {
       let lo = 0, hi = dates.length - 1, best = -1;
       while (lo <= hi) {
         const mid = (lo + hi) >> 1;
@@ -300,51 +300,43 @@
       return best;
     }
 
-    // Build overlapping daily portfolio series with forward-fill
     function buildPortfolioSeries(selectedBots) {
-      if (!selectedBots.length || typeof botData === "undefined") {
-        return { dates: [], equity: [] };
-      }
+      if (!selectedBots.length) return { dates: [], equity: [] };
 
-      // Overlapping date window: [max(start), min(end)]
+      // overlapping period: [max of starts, min of ends]
       let globalStart = null;
       let globalEnd = null;
 
       selectedBots.forEach(name => {
-        const bot = botData[name];
-        const s = bot.dates[0];
-        const e = bot.dates[bot.dates.length - 1];
-        if (globalStart === null || s > globalStart) globalStart = s;
-        if (globalEnd === null || e < globalEnd) globalEnd = e;
+        const dates = botData[name].dates;
+        const s = dates[0];
+        const e = dates[dates.length - 1];
+        if (!globalStart || s > globalStart) globalStart = s;
+        if (!globalEnd || e < globalEnd) globalEnd = e;
       });
 
       if (!globalStart || !globalEnd || globalStart > globalEnd) {
-        console.warn("No overlapping backtest window for bots:", selectedBots, globalStart, globalEnd);
+        console.warn("No overlapping window for bots", selectedBots);
         return { dates: [], equity: [] };
       }
 
-      const startDate = new Date(globalStart + "T00:00:00Z");
-      const endDate = new Date(globalEnd + "T00:00:00Z");
+      const start = new Date(globalStart + "T00:00:00Z");
+      const end = new Date(globalEnd + "T00:00:00Z");
 
       const dates = [];
-      for (let d = new Date(startDate); d <= endDate; d.setUTCDate(d.getUTCDate() + 1)) {
+      for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
         dates.push(d.toISOString().slice(0, 10));
       }
 
-      const equity = [];
-
-      dates.forEach(dateStr => {
+      const equity = dates.map(dateStr => {
         let sum = 0;
         selectedBots.forEach(name => {
           const bot = botData[name];
-          const idx = findLastIndexLE(bot.dates, dateStr);
-          let eq = 1.0;
-          if (idx >= 0) {
-            eq = bot.equity[idx];
-          }
+          const idx = lastIndexLE(bot.dates, dateStr);
+          const eq = idx >= 0 ? bot.equity[idx] : 1.0;
           sum += eq;
         });
-        equity.push(sum / selectedBots.length);
+        return sum / selectedBots.length;
       });
 
       return { dates, equity };
@@ -356,12 +348,11 @@
       }
       const first = equity[0];
       const last = equity[equity.length - 1];
-      const total = (last / first) - 1;
+      const total = last / first - 1;
 
       const startDate = new Date(dates[0] + "T00:00:00Z");
       const endDate = new Date(dates[dates.length - 1] + "T00:00:00Z");
-      const msPerDay = 1000 * 60 * 60 * 24;
-      const days = Math.max(1, Math.round((endDate - startDate) / msPerDay));
+      const days = Math.max(1, Math.round((endDate - startDate) / (1000 * 60 * 60 * 24)));
 
       let peak = equity[0];
       let maxDD = 0;
@@ -379,73 +370,21 @@
       let sharpe = NaN;
       if (dailyReturns.length > 1) {
         const mean = dailyReturns.reduce((a, b) => a + b, 0) / dailyReturns.length;
-        const variance = dailyReturns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (dailyReturns.length - 1 || 1);
+        const variance = dailyReturns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) /
+                         (dailyReturns.length - 1 || 1);
         const std = Math.sqrt(variance);
-        if (std > 0) {
-          sharpe = (mean / std) * Math.sqrt(365);
-        }
+        if (std > 0) sharpe = (mean / std) * Math.sqrt(365);
       }
 
       const ann = Math.pow(1 + total, 365 / days) - 1;
 
-      return { total, maxDD, ann, sharpe, days };
+      return { total, maxDD: maxDD, ann, sharpe, days };
     }
 
     let equityChart = null;
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const ctx = document.getElementById('equityChart').getContext('2d');
-
-      equityChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: [],
-          datasets: [{
-            label: 'Portfolio Equity (normalized)',
-            data: [],
-            borderWidth: 2,
-            tension: 0.15,
-            pointRadius: 0,
-            borderColor: 'rgba(255,255,255,0.9)'
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const v = context.parsed.y;
-                  return 'Equity: ' + v.toFixed(3);
-                }
-              }
-            }
-          },
-          scales: {
-            x: { title: { display: false } },
-            y: {
-              title: { display: false },
-              ticks: {
-                callback: function(value) { return value.toFixed(2); }
-              }
-            }
-          }
-        }
-      });
-
-      document.querySelectorAll('.bot-toggle').forEach(cb => {
-        cb.addEventListener('change', updateDashboard);
-      });
-
-      const capInput = document.getElementById('start-capital');
-      capInput.addEventListener('input', updateDashboard);
-
-      updateDashboard();
-    });
-
     function updateDashboard() {
-      if (typeof botData === "undefined" || !equityChart) return;
+      if (!equityChart || typeof botData === "undefined") return;
 
       const selected = getSelectedBots();
       const portfolio = buildPortfolioSeries(selected);
@@ -455,29 +394,69 @@
       equityChart.data.datasets[0].data = portfolio.equity;
       equityChart.update();
 
-      const fmtPct = (x) => isNaN(x) ? "–" : (x * 100).toFixed(1) + "%";
-      const fmtNum = (x) => isNaN(x) ? "–" : x.toFixed(2);
+      const fmtPct = x => isNaN(x) ? "–" : (x * 100).toFixed(1) + "%";
+      const fmtNum = x => isNaN(x) ? "–" : x.toFixed(2);
 
-      document.getElementById('stat-total').textContent = fmtPct(stats.total);
-      document.getElementById('stat-dd').textContent = fmtPct(stats.maxDD);
-      document.getElementById('stat-ann').textContent = fmtPct(stats.ann);
-      document.getElementById('stat-sharpe').textContent = fmtNum(stats.sharpe);
+      document.getElementById("stat-total").textContent = fmtPct(stats.total);
+      document.getElementById("stat-dd").textContent = fmtPct(stats.maxDD);
+      document.getElementById("stat-ann").textContent = fmtPct(stats.ann);
+      document.getElementById("stat-sharpe").textContent = fmtNum(stats.sharpe);
 
-      // Capital-based outputs
-      const capInput = document.getElementById('start-capital');
-      let startCap = parseFloat(capInput.value);
+      const capInput = document.getElementById("start-capital");
+      let startCap = capInput ? parseFloat(capInput.value) : NaN;
       if (isNaN(startCap) || startCap <= 0) startCap = 0;
 
-      let finalText = "–";
+      let outText = "–";
       if (startCap > 0 && portfolio.equity.length) {
-        const finalMult = portfolio.equity[portfolio.equity.length - 1];
-        const finalVal = startCap * finalMult;
+        const mult = portfolio.equity[portfolio.equity.length - 1];
+        const finalVal = startCap * mult;
         const profit = finalVal - startCap;
         const sign = profit >= 0 ? "+" : "";
-        finalText = `${finalVal.toFixed(0)} USDT (P/L: ${sign}${profit.toFixed(0)})`;
+        outText = `${finalVal.toFixed(0)} USDT (P/L: ${sign}${profit.toFixed(0)})`;
       }
-      document.getElementById('invest-output').textContent = finalText;
+      document.getElementById("invest-output").textContent = outText;
     }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const ctx = document.getElementById("equityChart").getContext("2d");
+      equityChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [{
+            label: "Portfolio equity (normalized)",
+            data: [],
+            borderWidth: 2,
+            borderColor: "rgba(255,255,255,0.9)",
+            tension: 0.15,
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: { ticks: { maxTicksLimit: 8 } },
+            y: {
+              ticks: {
+                callback: v => v.toFixed(2)
+              }
+            }
+          }
+        }
+      });
+
+      document.querySelectorAll(".bot-toggle").forEach(cb => {
+        cb.addEventListener("change", updateDashboard);
+      });
+
+      const capInput = document.getElementById("start-capital");
+      if (capInput) capInput.addEventListener("input", updateDashboard);
+
+      updateDashboard();
+    });
   </script>
 </body>
 </html>
