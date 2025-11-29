@@ -339,8 +339,19 @@
     return sum / selectedBots.length;
   });
 
+  // 🔧 Re-base so portfolio always starts at 1.0
+  if (equity.length) {
+    const base = equity[0];
+    if (base !== 0) {
+      for (let i = 0; i < equity.length; i++) {
+        equity[i] = equity[i] / base;
+      }
+    }
+  }
+
   return { dates, equity };
 }
+
 
 
     function computeStats(dates, equity) {
@@ -461,4 +472,5 @@
   </script>
 </body>
 </html>
+
 
