@@ -105,6 +105,30 @@
       opacity: 0.65;
       margin-top: 0.4rem;
     }
+    .soomario-invest {
+      margin-top: 0.6rem;
+      font-size: 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .soomario-invest label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .soomario-invest input[type="number"] {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      color: #fff;
+      max-width: 130px;
+    }
+    .soomario-invest-output {
+      opacity: 0.8;
+    }
     @media (max-width: 640px) {
       .soomario-widget {
         padding: 1rem;
@@ -119,7 +143,7 @@
       <div class="soomario-bot-list">
         <h3>Build Your Bot Mix</h3>
         <div class="soomario-warning">
-          Backtest only. Equal-weighted. DCA bots are <strong>spot/1×</strong> engines.
+          Backtests only. Equal-weighted. DCA bots are <strong>spot/1×</strong> engines.
         </div>
 
         <div class="soomario-group-title">Reversal (10% SL, leverage-friendly)</div>
@@ -213,6 +237,14 @@
           </div>
         </div>
 
+        <div class="soomario-invest">
+          <label>
+            Starting capital (USDT)
+            <input id="start-capital" type="number" value="10000" min="0" step="100" />
+          </label>
+          <div class="soomario-invest-output" id="invest-output">–</div>
+        </div>
+
         <div class="soomario-warning">
           Portfolio = equally weighted across selected bots.<br>
           Results are <strong>backtests</strong>, not live PnL. Real performance will differ.
@@ -224,35 +256,21 @@
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Your big JSON lives here -->
-  <script src="botData.js"></script>
-
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Your big JSON lives here -->
+  <!-- Big JSON from Python -->
   <script src="botData.js"></script>
 
   <script>
-    // Safety check: is botData actually here?
+    // Safety: make sure botData exists
     if (typeof botData === "undefined") {
       console.error("botData is not defined. Check that botData.js is loading.");
-      // Optional: show a user-facing message
-      document.addEventListener("DOMContentLoaded", () => {
-        const totalEl = document.getElementById("stat-total");
-        if (totalEl) totalEl.textContent = "Data failed to load";
-      });
     } else {
-      console.log("botData keys:", Object.keys(botData));
-    }
-
-    if (typeof botData !== "undefined") {
-      // Build lookup map for each bot
+      // Ensure each bot's dates are sorted and attach helper info
       Object.keys(botData).forEach(name => {
         const bot = botData[name];
-        bot.map = {};
-        bot.dates.forEach((d, i) => {
-          bot.map[d] = bot.equity[i];
-        });
+        const zipped = bot.dates.map((d, i) => ({ d, e: bot.equity[i] }));
+        zipped.sort((a, b) => a.d.localeCompare(b.d));
+        bot.dates = zipped.map(z => z.d);
+        bot.equity = zipped.map(z => z.e);
       });
     }
 
@@ -267,33 +285,69 @@
       return selected;
     }
 
+    // Binary search: last index where dates[idx] <= target
+    function findLastIndexLE(dates, target) {
+      let lo = 0, hi = dates.length - 1, best = -1;
+      while (lo <= hi) {
+        const mid = (lo + hi) >> 1;
+        if (dates[mid] <= target) {
+          best = mid;
+          lo = mid + 1;
+        } else {
+          hi = mid - 1;
+        }
+      }
+      return best;
+    }
+
+    // Build overlapping daily portfolio series with forward-fill
     function buildPortfolioSeries(selectedBots) {
       if (!selectedBots.length || typeof botData === "undefined") {
         return { dates: [], equity: [] };
       }
 
-      const sets = selectedBots.map(name => new Set(botData[name].dates));
-      let commonDates = Array.from(sets[0]);
-      for (let i = 1; i < sets.length; i++) {
-        const s = sets[i];
-        commonDates = commonDates.filter(d => s.has(d));
-      }
-      if (!commonDates.length) {
-        console.warn("No common dates between selected bots:", selectedBots);
+      // Overlapping date window: [max(start), min(end)]
+      let globalStart = null;
+      let globalEnd = null;
+
+      selectedBots.forEach(name => {
+        const bot = botData[name];
+        const s = bot.dates[0];
+        const e = bot.dates[bot.dates.length - 1];
+        if (globalStart === null || s > globalStart) globalStart = s;
+        if (globalEnd === null || e < globalEnd) globalEnd = e;
+      });
+
+      if (!globalStart || !globalEnd || globalStart > globalEnd) {
+        console.warn("No overlapping backtest window for bots:", selectedBots, globalStart, globalEnd);
         return { dates: [], equity: [] };
       }
-      commonDates.sort();
 
-      const equity = [];
-      for (const d of commonDates) {
-        let sum = 0;
-        selectedBots.forEach(name => {
-          sum += botData[name].map[d];
-        });
-        equity.push(sum / selectedBots.length);
+      const startDate = new Date(globalStart + "T00:00:00Z");
+      const endDate = new Date(globalEnd + "T00:00:00Z");
+
+      const dates = [];
+      for (let d = new Date(startDate); d <= endDate; d.setUTCDate(d.getUTCDate() + 1)) {
+        dates.push(d.toISOString().slice(0, 10));
       }
 
-      return { dates: commonDates, equity };
+      const equity = [];
+
+      dates.forEach(dateStr => {
+        let sum = 0;
+        selectedBots.forEach(name => {
+          const bot = botData[name];
+          const idx = findLastIndexLE(bot.dates, dateStr);
+          let eq = 1.0;
+          if (idx >= 0) {
+            eq = bot.equity[idx];
+          }
+          sum += eq;
+        });
+        equity.push(sum / selectedBots.length);
+      });
+
+      return { dates, equity };
     }
 
     function computeStats(dates, equity) {
@@ -304,8 +358,8 @@
       const last = equity[equity.length - 1];
       const total = (last / first) - 1;
 
-      const startDate = new Date(dates[0]);
-      const endDate = new Date(dates[dates.length - 1]);
+      const startDate = new Date(dates[0] + "T00:00:00Z");
+      const endDate = new Date(dates[dates.length - 1] + "T00:00:00Z");
       const msPerDay = 1000 * 60 * 60 * 24;
       const days = Math.max(1, Math.round((endDate - startDate) / msPerDay));
 
@@ -337,7 +391,7 @@
       return { total, maxDD, ann, sharpe, days };
     }
 
-    let equityChart;
+    let equityChart = null;
 
     document.addEventListener("DOMContentLoaded", () => {
       const ctx = document.getElementById('equityChart').getContext('2d');
@@ -384,11 +438,15 @@
         cb.addEventListener('change', updateDashboard);
       });
 
+      const capInput = document.getElementById('start-capital');
+      capInput.addEventListener('input', updateDashboard);
+
       updateDashboard();
     });
 
     function updateDashboard() {
       if (typeof botData === "undefined" || !equityChart) return;
+
       const selected = getSelectedBots();
       const portfolio = buildPortfolioSeries(selected);
       const stats = computeStats(portfolio.dates, portfolio.equity);
@@ -404,8 +462,22 @@
       document.getElementById('stat-dd').textContent = fmtPct(stats.maxDD);
       document.getElementById('stat-ann').textContent = fmtPct(stats.ann);
       document.getElementById('stat-sharpe').textContent = fmtNum(stats.sharpe);
+
+      // Capital-based outputs
+      const capInput = document.getElementById('start-capital');
+      let startCap = parseFloat(capInput.value);
+      if (isNaN(startCap) || startCap <= 0) startCap = 0;
+
+      let finalText = "–";
+      if (startCap > 0 && portfolio.equity.length) {
+        const finalMult = portfolio.equity[portfolio.equity.length - 1];
+        const finalVal = startCap * finalMult;
+        const profit = finalVal - startCap;
+        const sign = profit >= 0 ? "+" : "";
+        finalText = `${finalVal.toFixed(0)} USDT (P/L: ${sign}${profit.toFixed(0)})`;
+      }
+      document.getElementById('invest-output').textContent = finalText;
     }
   </script>
 </body>
 </html>
-
