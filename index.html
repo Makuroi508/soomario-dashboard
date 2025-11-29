@@ -227,19 +227,40 @@
   <!-- Your big JSON lives here -->
   <script src="botData.js"></script>
 
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Your big JSON lives here -->
+  <script src="botData.js"></script>
+
   <script>
-    // Build lookup map for each bot
-    Object.keys(botData).forEach(name => {
-      const bot = botData[name];
-      bot.map = {};
-      bot.dates.forEach((d, i) => { bot.map[d] = bot.equity[i]; });
-    });
+    // Safety check: is botData actually here?
+    if (typeof botData === "undefined") {
+      console.error("botData is not defined. Check that botData.js is loading.");
+      // Optional: show a user-facing message
+      document.addEventListener("DOMContentLoaded", () => {
+        const totalEl = document.getElementById("stat-total");
+        if (totalEl) totalEl.textContent = "Data failed to load";
+      });
+    } else {
+      console.log("botData keys:", Object.keys(botData));
+    }
+
+    if (typeof botData !== "undefined") {
+      // Build lookup map for each bot
+      Object.keys(botData).forEach(name => {
+        const bot = botData[name];
+        bot.map = {};
+        bot.dates.forEach((d, i) => {
+          bot.map[d] = bot.equity[i];
+        });
+      });
+    }
 
     function getSelectedBots() {
       const checkboxes = document.querySelectorAll('.bot-toggle');
       const selected = [];
       checkboxes.forEach(cb => {
-        if (cb.checked && botData[cb.value]) {
+        if (cb.checked && typeof botData !== "undefined" && botData[cb.value]) {
           selected.push(cb.value);
         }
       });
@@ -247,7 +268,9 @@
     }
 
     function buildPortfolioSeries(selectedBots) {
-      if (!selectedBots.length) return { dates: [], equity: [] };
+      if (!selectedBots.length || typeof botData === "undefined") {
+        return { dates: [], equity: [] };
+      }
 
       const sets = selectedBots.map(name => new Set(botData[name].dates));
       let commonDates = Array.from(sets[0]);
@@ -255,7 +278,10 @@
         const s = sets[i];
         commonDates = commonDates.filter(d => s.has(d));
       }
-      if (!commonDates.length) return { dates: [], equity: [] };
+      if (!commonDates.length) {
+        console.warn("No common dates between selected bots:", selectedBots);
+        return { dates: [], equity: [] };
+      }
       commonDates.sort();
 
       const equity = [];
@@ -311,47 +337,58 @@
       return { total, maxDD, ann, sharpe, days };
     }
 
-    const ctx = document.getElementById('equityChart').getContext('2d');
+    let equityChart;
 
-    let equityChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: [],
-        datasets: [{
-          label: 'Portfolio Equity (normalized)',
-          data: [],
-          borderWidth: 2,
-          tension: 0.15,
-          pointRadius: 0,
-          borderColor: 'rgba(255,255,255,0.9)'
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                const v = context.parsed.y;
-                return 'Equity: ' + v.toFixed(3);
+    document.addEventListener("DOMContentLoaded", () => {
+      const ctx = document.getElementById('equityChart').getContext('2d');
+
+      equityChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Portfolio Equity (normalized)',
+            data: [],
+            borderWidth: 2,
+            tension: 0.15,
+            pointRadius: 0,
+            borderColor: 'rgba(255,255,255,0.9)'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const v = context.parsed.y;
+                  return 'Equity: ' + v.toFixed(3);
+                }
+              }
+            }
+          },
+          scales: {
+            x: { title: { display: false } },
+            y: {
+              title: { display: false },
+              ticks: {
+                callback: function(value) { return value.toFixed(2); }
               }
             }
           }
-        },
-        scales: {
-          x: { title: { display: false } },
-          y: {
-            title: { display: false },
-            ticks: {
-              callback: function(value) { return value.toFixed(2); }
-            }
-          }
         }
-      }
+      });
+
+      document.querySelectorAll('.bot-toggle').forEach(cb => {
+        cb.addEventListener('change', updateDashboard);
+      });
+
+      updateDashboard();
     });
 
     function updateDashboard() {
+      if (typeof botData === "undefined" || !equityChart) return;
       const selected = getSelectedBots();
       const portfolio = buildPortfolioSeries(selected);
       const stats = computeStats(portfolio.dates, portfolio.equity);
@@ -368,12 +405,7 @@
       document.getElementById('stat-ann').textContent = fmtPct(stats.ann);
       document.getElementById('stat-sharpe').textContent = fmtNum(stats.sharpe);
     }
-
-    document.querySelectorAll('.bot-toggle').forEach(cb => {
-      cb.addEventListener('change', updateDashboard);
-    });
-
-    updateDashboard();
   </script>
 </body>
 </html>
+
