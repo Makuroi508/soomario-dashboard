@@ -301,46 +301,47 @@
     }
 
     function buildPortfolioSeries(selectedBots) {
-      if (!selectedBots.length) return { dates: [], equity: [] };
+  if (!selectedBots.length) return { dates: [], equity: [] };
 
-      // overlapping period: [max of starts, min of ends]
-      let globalStart = null;
-      let globalEnd = null;
+  // overlapping period: [max of starts, min of ends]
+  let globalStart = null;
+  let globalEnd = null;
 
-      selectedBots.forEach(name => {
-        const dates = botData[name].dates;
-        const s = dates[0];
-        const e = dates[dates.length - 1];
-        if (!globalStart || s > globalStart) globalStart = s;
-        if (!globalEnd || e < globalEnd) globalEnd = e;
-      });
+  selectedBots.forEach(name => {
+    const dates = botData[name].dates;
+    const s = dates[0];
+    const e = dates[dates.length - 1];
+    if (!globalStart || s > globalStart) globalStart = s;
+    if (!globalEnd || e < globalEnd) globalEnd = e;
+  });
 
-      if (!globalStart || !globalEnd || globalStart > globalEnd) {
-        console.warn("No overlapping window for bots", selectedBots);
-        return { dates: [], equity: [] };
-      }
+  if (!globalStart || !globalEnd || globalStart > globalEnd) {
+    console.warn("No overlapping window for bots", selectedBots);
+    return { dates: [], equity: [] };
+  }
 
-      const start = new Date(globalStart + "T00:00:00Z");
-      const end = new Date(globalEnd + "T00:00:00Z");
+  const start = new Date(globalStart + "T00:00:00Z");
+  const end = new Date(globalEnd + "T00:00:00Z");
 
-      const dates = [];
-      for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
-        dates.push(d.toISOString().slice(0, 10));
-      }
+  const dates = [];
+  for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
+    dates.push(d.toISOString().slice(0, 10));
+  }
 
-      const equity = dates.map(dateStr => {
-        let sum = 0;
-        selectedBots.forEach(name => {
-          const bot = botData[name];
-          const idx = lastIndexLE(bot.dates, dateStr);
-          const eq = idx >= 0 ? bot.equity[idx] : 1.0;
-          sum += eq;
-        });
-        return sum / selectedBots.length;
-      });
+  const equity = dates.map(dateStr => {
+    let sum = 0;
+    selectedBots.forEach(name => {
+      const bot = botData[name];
+      const idx = lastIndexLE(bot.dates, dateStr);
+      const eq = idx >= 0 ? bot.equity[idx] : 1.0;
+      sum += eq;
+    });
+    return sum / selectedBots.length;
+  });
 
-      return { dates, equity };
-    }
+  return { dates, equity };
+}
+
 
     function computeStats(dates, equity) {
       if (!dates.length || !equity.length) {
@@ -460,3 +461,4 @@
   </script>
 </body>
 </html>
+
