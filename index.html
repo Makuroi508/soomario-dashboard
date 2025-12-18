@@ -250,9 +250,32 @@
             <div class="panel">
                 <h2 class="panel-title">Select Your Bots</h2>
                 
-                <!-- Reversal Bots -->
+                                <!-- Stock/ETF Bots -->
                 <div class="bot-section">
-                    <div class="bot-section-title">⚡ Reversal (10% SL, Leverage-Friendly)</div>
+                    <div class="bot-section-title">📈 Stocks & ETFs</div>
+                    
+                    <div class="bot-checkbox">
+                        <input type="checkbox" id="GOOGL_low" value="GOOGL_low">
+                        <label for="GOOGL_low">GOOGL Low Freq (Daily Chart)</label>
+                        <div class="bot-indicator" style="background: rgba(33, 150, 243, 1);"></div>
+                    </div>
+                    
+                    <div class="bot-checkbox">
+                        <input type="checkbox" id="NVDA_short" value="NVDA_short">
+                        <label for="NVDA_short">NVDA w/ Short (15min)</label>
+                        <div class="bot-indicator" style="background: rgba(76, 175, 80, 1);"></div>
+                    </div>
+                    
+                    <div class="bot-checkbox">
+                        <input type="checkbox" id="SLV_10" value="SLV_10">
+                        <label for="SLV_10">SLV 10% SL (4H)</label>
+                        <div class="bot-indicator" style="background: rgba(192, 192, 192, 1);"></div>
+                    </div>
+                </div>
+                
+<!-- Crypto Reversal Bots -->
+                <div class="bot-section">
+                    <div class="bot-section-title">⚡ Crypto Reversal (10% SL, Leverage-Friendly)</div>
                     
                     <div class="bot-checkbox">
                         <input type="checkbox" id="HYPE_no_short" value="HYPE_no_short">
@@ -280,13 +303,13 @@
                     
                     <div class="bot-checkbox">
                         <input type="checkbox" id="PUMP_no_short" value="PUMP_no_short">
-                        <label for="PUMP_no_short">PUMP 4h Reversal (longs only)</label>
+                        <label for="PUMP_no_short">PUMP 4h Memecoin (longs only)</label>
                         <div class="bot-indicator" style="background: rgba(201, 176, 255, 1);"></div>
                     </div>
                     
                     <div class="bot-checkbox">
                         <input type="checkbox" id="PUMP_with_short" value="PUMP_with_short">
-                        <label for="PUMP_with_short">PUMP 4h Reversal (with shorts)</label>
+                        <label for="PUMP_with_short">PUMP 4h Memecoin (with shorts)</label>
                         <div class="bot-indicator" style="background: rgba(153, 102, 255, 1);"></div>
                     </div>
                     
