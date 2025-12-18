@@ -447,78 +447,70 @@
         }
         
         function combineEquityCurves(selectedBots, startDate, endDate) {
-            // Create date->equity maps for each bot
-            const botMaps = {};
-            let globalStartDate = startDate;
-            let globalEndDate = endDate;
+            // Equal weight portfolio: each bot gets (1/N) of the capital
+            // Portfolio value at time t = sum of (1/N * capital * return_of_bot_i)
             
-            // Build maps and find the actual date range where all bots have data
+            const botMaps = {};
+            const botStartingEquity = {};
+            
+            // Build maps for each bot
             selectedBots.forEach(botName => {
                 const bot = botData[botName];
                 const map = {};
+                let firstEquityInRange = null;
                 
                 bot.dates.forEach((date, idx) => {
                     if (date >= startDate && date <= endDate) {
                         map[date] = bot.equity[idx];
+                        if (firstEquityInRange === null) {
+                            firstEquityInRange = bot.equity[idx];
+                        }
                     }
                 });
                 
                 botMaps[botName] = map;
-                
-                // Find the latest start date among all bots
-                const botDates = Object.keys(map).sort();
-                if (botDates.length > 0) {
-                    if (botDates[0] > globalStartDate) {
-                        globalStartDate = botDates[0];
-                    }
-                    if (botDates[botDates.length - 1] < globalEndDate) {
-                        globalEndDate = botDates[botDates.length - 1];
-                    }
-                }
+                botStartingEquity[botName] = firstEquityInRange || 1.0;
             });
             
-            // Collect all unique dates across all bots in the range
+            // Collect all unique dates
             const allDates = new Set();
             selectedBots.forEach(botName => {
                 Object.keys(botMaps[botName]).forEach(date => {
-                    if (date >= globalStartDate && date <= globalEndDate) {
-                        allDates.add(date);
-                    }
+                    allDates.add(date);
                 });
             });
             
-            // Sort dates
             const sortedDates = Array.from(allDates).sort();
             
-            // Build combined equity curve (equal weighted)
+            // Build combined equity curve
             const combinedEquity = [];
-            const weight = 1 / selectedBots.length;
+            const numBots = selectedBots.length;
             
-            // Track last known equity for each bot (forward fill)
+            // Track last known equity for each bot
             const lastKnownEquity = {};
             selectedBots.forEach(botName => {
-                lastKnownEquity[botName] = 1.0; // Start at 1.0
+                lastKnownEquity[botName] = botStartingEquity[botName];
             });
             
             sortedDates.forEach(date => {
-                let totalEquity = 0;
-                let botsWithData = 0;
-                
+                // Update last known equity if we have new data
                 selectedBots.forEach(botName => {
-                    const equity = botMaps[botName][date];
-                    
-                    if (equity !== undefined) {
-                        lastKnownEquity[botName] = equity;
-                        botsWithData++;
+                    if (botMaps[botName][date] !== undefined) {
+                        lastKnownEquity[botName] = botMaps[botName][date];
                     }
-                    
-                    totalEquity += lastKnownEquity[botName] * weight;
                 });
                 
-                // Only add if at least one bot has actual data for this date
-                if (botsWithData > 0) {
-                    combinedEquity.push(totalEquity);
-                }
+                // Calculate portfolio equity
+                // For each bot: (current_equity / starting_equity) gives you the multiplier
+                // Average the multipliers for equal weight
+                let totalMultiplier = 0;
+                selectedBots.forEach(botName => {
+                    const multiplier = lastKnownEquity[botName] / botStartingEquity[botName];
+                    totalMultiplier += multiplier;
+                });
+                
+                const avgMultiplier = totalMultiplier / numBots;
+                combinedEquity.push(avgMultiplier);
             });
             
             return {
