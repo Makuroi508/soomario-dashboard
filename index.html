@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>⚙️ Soomario Bot Mix Calculator</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -21,7 +22,7 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
         }
         
@@ -37,52 +38,45 @@
         .subtitle {
             text-align: center;
             color: #a0a0a0;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             font-size: 0.9rem;
         }
         
-        .disclaimer {
-            background: rgba(212, 175, 55, 0.1);
-            border-left: 4px solid #D4AF37;
-            padding: 15px;
-            margin-bottom: 30px;
-            border-radius: 5px;
-            font-size: 0.85rem;
-            color: #ffd700;
-        }
-        
-        .grid {
+        /* Main Grid Layout */
+        .main-grid {
             display: grid;
-            grid-template-columns: 350px 1fr;
+            grid-template-columns: 320px 1fr;
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         
+        /* Panel Styling */
         .panel {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 10px;
-            padding: 25px;
+            padding: 20px;
         }
         
         .panel-title {
             font-family: 'Cinzel', serif;
             color: #D4AF37;
-            font-size: 1.3rem;
-            margin-bottom: 20px;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
             border-bottom: 2px solid rgba(212, 175, 55, 0.3);
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
         
+        /* Left Panel - Bot Selection */
         .bot-section {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         
         .bot-section-title {
             color: #D4AF37;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -90,12 +84,13 @@
         .bot-checkbox {
             display: flex;
             align-items: center;
-            padding: 10px;
-            margin-bottom: 8px;
+            padding: 8px 10px;
+            margin-bottom: 6px;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 0.85rem;
         }
         
         .bot-checkbox:hover {
@@ -104,35 +99,30 @@
         }
         
         .bot-checkbox input[type="checkbox"] {
-            margin-right: 12px;
-            width: 18px;
-            height: 18px;
+            margin-right: 10px;
             cursor: pointer;
-        }
-        
-        .bot-checkbox label {
-            cursor: pointer;
-            flex: 1;
-            font-size: 0.9rem;
+            width: 16px;
+            height: 16px;
         }
         
         .bot-indicator {
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            margin-left: 8px;
+            margin-left: auto;
         }
         
-        .input-group {
-            margin-bottom: 20px;
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 15px;
         }
         
-        .input-label {
+        .form-label {
             display: block;
             color: #D4AF37;
             font-size: 0.85rem;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -140,32 +130,32 @@
         input[type="date"],
         input[type="number"] {
             width: 100%;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.08);
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(212, 175, 55, 0.3);
             border-radius: 5px;
             color: #e0e0e0;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
         
         input[type="date"]:focus,
         input[type="number"]:focus {
             outline: none;
             border-color: #D4AF37;
-            background: rgba(255, 255, 255, 0.1);
         }
         
         .calculate-btn {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #D4AF37 0%, #B8941E 100%);
+            padding: 12px;
+            background: linear-gradient(135deg, #D4AF37 0%, #b8942a 100%);
+            color: #1a1a2e;
             border: none;
             border-radius: 8px;
-            color: #1a1a2e;
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            margin-top: 15px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -175,114 +165,32 @@
             box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
         }
         
+        .note {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 3px solid #D4AF37;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            color: #ffd700;
+        }
+        
+        /* Right Panel - Chart and Metrics */
         .chart-container {
             position: relative;
             height: 400px;
+            margin-bottom: 20px;
         }
         
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 15px;
-            margin-top: 20px;
+            margin-bottom: 15px;
         }
-
-        .trade-history {
-            margin-top: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 5px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-        }
-        
-        .trade-history::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .trade-history::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 4px;
-        }
-        
-        .trade-history::-webkit-scrollbar-thumb {
-            background: rgba(212, 175, 55, 0.5);
-            border-radius: 4px;
-        }
-        
-        .trade-history::-webkit-scrollbar-thumb:hover {
-            background: rgba(212, 175, 55, 0.7);
-        }
-        
-        .trade-history-title {
-            color: #D4AF37;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-        
-        .trade-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-        
-        .trade-table thead {
-            position: sticky;
-            top: 0;
-            background: rgba(26, 26, 46, 0.95);
-            z-index: 10;
-        }
-        
-        .trade-table th {
-            padding: 12px 8px;
-            text-align: left;
-            color: #D4AF37;
-            font-weight: 600;
-            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-        }
-        
-        .trade-table td {
-            padding: 10px 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .trade-table tr:hover {
-            background: rgba(212, 175, 55, 0.05);
-        }
-        
-        .trade-bot {
-            font-weight: 600;
-            color: #D4AF37;
-        }
-        
-        .trade-type-long {
-            color: #4caf50;
-            font-weight: 600;
-        }
-        
-        .trade-type-short {
-            color: #f44336;
-            font-weight: 600;
-        }
-        
-        .trade-pnl-positive {
-            color: #4caf50;
-            font-weight: 600;
-        }
-        
-        .trade-pnl-negative {
-            color: #f44336;
-            font-weight: 600;
-        }
-
         
         .metric-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 8px;
             padding: 15px;
@@ -290,150 +198,236 @@
         }
         
         .metric-label {
-            color: #a0a0a0;
             font-size: 0.75rem;
+            color: #a0a0a0;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 8px;
         }
         
         .metric-value {
-            color: #D4AF37;
             font-size: 1.8rem;
-            font-weight: 700;
+            font-weight: 600;
+            color: #D4AF37;
         }
         
         .metric-value.positive {
-            color: #4ade80;
+            color: #4caf50;
         }
         
         .metric-value.negative {
-            color: #f87171;
+            color: #f44336;
         }
         
-        .warning {
-            background: rgba(248, 113, 113, 0.1);
-            border-left: 4px solid #f87171;
-            padding: 12px;
+        /* Capital Display */
+        .capital-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        /* Trade History Table - Full Width Below */
+        .trade-history-section {
             margin-top: 20px;
-            border-radius: 5px;
-            font-size: 0.85rem;
-            color: #fca5a5;
         }
         
-        @media (max-width: 1000px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
+        .trade-history-container {
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .trade-history-container::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        .trade-history-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+        
+        .trade-history-container::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.5);
+            border-radius: 5px;
+        }
+        
+        .trade-history-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.7);
+        }
+        
+        .trade-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        .trade-table thead {
+            position: sticky;
+            top: 0;
+            background: rgba(26, 26, 46, 0.98);
+            z-index: 10;
+        }
+        
+        .trade-table th {
+            padding: 12px 15px;
+            text-align: left;
+            color: #D4AF37;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        
+        .trade-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            white-space: nowrap;
+        }
+        
+        .trade-table tbody tr:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .trade-date {
+            color: #a0a0a0;
+            font-size: 0.85rem;
+        }
+        
+        .trade-bot {
+            color: #D4AF37;
+            font-weight: 500;
+        }
+        
+        .trade-type {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .trade-type.long {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        
+        .trade-type.short {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+        
+        .trade-pnl {
+            font-weight: 600;
+        }
+        
+        .trade-pnl.positive {
+            color: #4caf50;
+        }
+        
+        .trade-pnl.negative {
+            color: #f44336;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⚙️ BUILD YOUR BOT MIX ⚙️</h1>
-        <p class="subtitle">Backtests only. Portfolio is equally weighted across selected bots.<br>
-        DCA engines are designed for spot / 1× exposure.</p>
+        <h1>⚙️ Soomario Bot Mix Calculator</h1>
+        <p class="subtitle">Backtest and optimize your bot portfolio allocation</p>
         
-        <div class="disclaimer">
-            <strong>⚠️ Important:</strong> Portfolio is equal-weighted across selected bots. Results are backtests, not live P&L. 
-            Past performance does not guarantee future results. These bots use leverage - understand the risks before trading.
-        </div>
-        
-        <div class="grid">
-            <!-- Left Panel: Controls -->
+        <!-- Main Grid: Left sidebar + Right content -->
+        <div class="main-grid">
+            <!-- Left Panel: Bot Selection -->
             <div class="panel">
                 <h2 class="panel-title">Select Your Bots</h2>
                 
-                                <!-- Stock/ETF Bots -->
+                <!-- Stocks & ETFs Section -->
                 <div class="bot-section">
                     <div class="bot-section-title">📈 Stocks & ETFs</div>
-                    
-                    <div class="bot-checkbox">
-                        <input type="checkbox" id="GOOGL_low" value="GOOGL_low">
-                        <label for="GOOGL_low">GOOGL Low Freq (Daily Chart)</label>
+                    <label class="bot-checkbox">
+                        <input type="checkbox" value="GOOGL_low">
+                        <span>GOOGL Low Freq (Daily Chart)</span>
                         <div class="bot-indicator" style="background: rgba(33, 150, 243, 1);"></div>
-                    </div>
-                    
-                    <div class="bot-checkbox">
-                        <input type="checkbox" id="NVDA_short" value="NVDA_short">
-                        <label for="NVDA_short">NVDA w/ Short (15min)</label>
+                    </label>
+                    <label class="bot-checkbox">
+                        <input type="checkbox" value="NVDA_short">
+                        <span>NVDA w/ Short (15min)</span>
                         <div class="bot-indicator" style="background: rgba(76, 175, 80, 1);"></div>
-                    </div>
-                    
-                    <div class="bot-checkbox">
-                        <input type="checkbox" id="SLV_10" value="SLV_10">
-                        <label for="SLV_10">SLV 10% SL (4H)</label>
+                    </label>
+                    <label class="bot-checkbox">
+                        <input type="checkbox" value="SLV_10">
+                        <span>SLV 10% SL (4H)</span>
                         <div class="bot-indicator" style="background: rgba(192, 192, 192, 1);"></div>
-                    </div>
+                    </label>
                 </div>
                 
-<!-- Crypto Reversal Bots -->
+                <!-- Crypto Reversal Section -->
                 <div class="bot-section">
                     <div class="bot-section-title">⚡ Crypto Reversal (10% SL, Leverage-Friendly)</div>
-                    
-                    <div class="bot-checkbox">
-                        <input type="checkbox" id="HYPE_no_short" value="HYPE_no_short">
-                        <label for="HYPE_no_short">HYPE 4h Reversal (longs only)</label>
+                    <label class="bot-checkbox">
+                        <input type="checkbox" value="HYPE_no_short">
+                        <span>HYPE 4h Reversal (longs only)</span>
                         <div class="bot-indicator" style="background: rgba(255, 230, 153, 1);"></div>
-                    </div>
-                    
-                    <div class="bot-checkbox">
-                        <input type="checkbox" id="HYPE_with_short" value="HYPE_with_short">
-                        <label for="HYPE_with_short">HYPE 4h Reversal (with shorts)</label>
+                    </label>
+                    <label class="bot-checkbox">
+                        <input type="checkbox" value="HYPE_with_short">
+                        <span>HYPE 4h Reversal (with shorts)</span>
                         <div class="bot-indicator" style="background: rgba(255, 206, 86, 1);"></div>
-                    </div>
-                    
-                    <div class="bot-checkbox">
-                        <input type="checkbox" id="LTC_no_short" value="LTC_no_short">
-                        <label for="LTC_no_short">LTC 4h Reversal (longs only)</label>
+                    </label>
+                    <label class="bot-checkbox">
+                        <input type="checkbox" value="LTC_no_short">
+                        <span>LTC 4h Reversal (longs only)</span>
                         <div class="bot-indicator" style="background: rgba(154, 208, 245, 1);"></div>
-                    </div>
-                    
-                    <div class="bot-checkbox">
-                        <input type="checkbox" id="LTC_with_short" value="LTC_with_short">
-                        <label for="LTC_with_short">LTC 4h Reversal (with shorts)</label>
+                    </label>
+                    <label class="bot-checkbox">
+                        <input type="checkbox" value="LTC_with_short">
+                        <span>LTC 4h Reversal (with shorts)</span>
                         <div class="bot-indicator" style="background: rgba(54, 162, 235, 1);"></div>
-                    </div>
-                    
-                    <div class="bot-checkbox">
-                        <input type="checkbox" id="PUMP_no_short" value="PUMP_no_short">
-                        <label for="PUMP_no_short">PUMP 4h Memecoin (longs only)</label>
+                    </label>
+                    <label class="bot-checkbox">
+                        <input type="checkbox" value="PUMP_no_short">
+                        <span>PUMP 4h Memecoin (longs only)</span>
                         <div class="bot-indicator" style="background: rgba(201, 176, 255, 1);"></div>
-                    </div>
-                    
-                    <div class="bot-checkbox">
-                        <input type="checkbox" id="PUMP_with_short" value="PUMP_with_short">
-                        <label for="PUMP_with_short">PUMP 4h Memecoin (with shorts)</label>
+                    </label>
+                    <label class="bot-checkbox">
+                        <input type="checkbox" value="PUMP_with_short">
+                        <span>PUMP 4h Memecoin (with shorts)</span>
                         <div class="bot-indicator" style="background: rgba(153, 102, 255, 1);"></div>
-                    </div>
-                    
-                    <div class="bot-checkbox">
-                        <input type="checkbox" id="CRV_no_short" value="CRV_no_short">
-                        <label for="CRV_no_short">CRV 4h Reversal (longs only)</label>
+                    </label>
+                    <label class="bot-checkbox">
+                        <input type="checkbox" value="CRV_no_short">
+                        <span>CRV 4h Reversal (longs only)</span>
                         <div class="bot-indicator" style="background: rgba(255, 159, 164, 1);"></div>
-                    </div>
-                    
-                    <div class="bot-checkbox">
-                        <input type="checkbox" id="CRV_with_short" value="CRV_with_short">
-                        <label for="CRV_with_short">CRV 4h Reversal (with shorts)</label>
+                    </label>
+                    <label class="bot-checkbox">
+                        <input type="checkbox" value="CRV_with_short">
+                        <span>CRV 4h Reversal (with shorts)</span>
                         <div class="bot-indicator" style="background: rgba(255, 99, 132, 1);"></div>
-                    </div>
+                    </label>
                 </div>
                 
                 <!-- Date Range -->
-                <div class="input-group">
-                    <label class="input-label">Start Date</label>
-                    <input type="date" id="startDate" value="2023-03-01">
+                <div class="form-group">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" id="startDate" value="2024-12-01">
                 </div>
                 
-                <div class="input-group">
-                    <label class="input-label">End Date</label>
-                    <input type="date" id="endDate" value="2025-12-04">
+                <div class="form-group">
+                    <label class="form-label">End Date</label>
+                    <input type="date" id="endDate" value="2025-12-18">
                 </div>
                 
-                <!-- Capital Allocation -->
-                <div class="input-group">
-                    <label class="input-label">Starting Capital (USDT)</label>
+                <div class="form-group">
+                    <label class="form-label">Starting Capital (USDT)</label>
                     <input type="number" id="startingCapital" value="10000" min="100" step="100">
                 </div>
                 
@@ -441,89 +435,89 @@
                     🚀 Calculate Portfolio
                 </button>
                 
-                <div class="warning">
-                    <strong>Note:</strong> Portfolio is equally weighted. If you select 4 bots with $10,000, 
-                    each bot gets $2,500. Returns are combined.
+                <div class="note">
+                    <strong>Note:</strong> Portfolio is equally weighted. If you select 4 bots with $10,000, each bot gets $2,500. Returns are combined.
                 </div>
             </div>
             
-            <!-- Right Panel: Chart -->
+            <!-- Right Panel: Chart and Metrics -->
             <div class="panel">
                 <h2 class="panel-title">Equity Curve</h2>
+                
                 <div class="chart-container">
                     <canvas id="equityChart"></canvas>
                 </div>
                 
-                <!-- Metrics -->
+                <!-- Metrics Grid -->
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-label">Total Return</div>
                         <div class="metric-value" id="totalReturn">-</div>
                     </div>
-                    
                     <div class="metric-card">
                         <div class="metric-label">Max Drawdown</div>
                         <div class="metric-value negative" id="maxDrawdown">-</div>
                     </div>
-                    
                     <div class="metric-card">
                         <div class="metric-label">Annualized</div>
                         <div class="metric-value" id="annualized">-</div>
                     </div>
-                    
                     <div class="metric-card">
                         <div class="metric-label">Sharpe (Approx)</div>
                         <div class="metric-value" id="sharpe">-</div>
                     </div>
-                    
+                </div>
+                
+                <!-- Capital Display -->
+                <div class="capital-grid">
                     <div class="metric-card">
                         <div class="metric-label">Starting Capital</div>
-                        <div class="metric-value" id="startingCap">$10,000</div>
+                        <div class="metric-value" id="startingCapitalDisplay" style="color: #D4AF37;">-</div>
                     </div>
-                    
                     <div class="metric-card">
                         <div class="metric-label">Final Value</div>
                         <div class="metric-value positive" id="finalValue">-</div>
                     </div>
-                
-                
-                <div class="trade-history-title">📋 Trade History (Last 50 Trades)</div>
-                <div class="trade-history">
-                    <table class="trade-table" id="tradeHistoryTable">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Bot</th>
-                                <th>Type</th>
-                                <th>Entry</th>
-                                <th>Exit</th>
-                                <th>P&L %</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tradeHistoryBody">
-                            <tr>
-                                <td colspan="6" style="text-align: center; padding: 20px; color: #888;">
-                                    Select bots and calculate portfolio to see trade history
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Trade History - Full Width Below -->
+        <div class="panel trade-history-section">
+            <h2 class="panel-title">📋 Trade History (Last 50 Trades)</h2>
+            <div class="trade-history-container">
+                <table class="trade-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Bot</th>
+                            <th>Type</th>
+                            <th>Entry Equity</th>
+                            <th>Exit Equity</th>
+                            <th>P&L %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tradeHistoryBody">
+                        <tr>
+                            <td colspan="6" class="empty-state">
+                                Select bots and calculate portfolio to see trade history
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
     
     <script src="botData.js"></script>
     <script>
-        let chart = null;
+        let equityChart = null;
         
         function calculatePortfolio() {
             try {
                 // Get selected bots
                 const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
                 const selectedBots = Array.from(checkboxes).map(cb => cb.value);
-                
-                console.log('Selected bots:', selectedBots);
                 
                 if (selectedBots.length === 0) {
                     alert('Please select at least one bot!');
@@ -535,16 +529,11 @@
                 const endDate = document.getElementById('endDate').value;
                 const startingCapital = parseFloat(document.getElementById('startingCapital').value);
                 
-                console.log('Date range:', startDate, 'to', endDate);
-                console.log('Starting capital:', startingCapital);
-                
                 // Calculate portfolio
-                const portfolioData = combineEquityCurves(selectedBots, startDate, endDate, startingCapital);
-                
-                console.log('Portfolio data points:', portfolioData.dates.length);
+                const portfolioData = combineEquityCurves(selectedBots, startDate, endDate);
                 
                 if (portfolioData.dates.length === 0) {
-                    alert('No data available for the selected date range and bots. Try selecting a different date range or different bots.');
+                    alert('No data available for the selected date range and bots.');
                     return;
                 }
                 
@@ -555,23 +544,16 @@
                 const metrics = calculateMetrics(portfolioData, startingCapital);
                 displayMetrics(metrics);
                 
-                
-                
                 // Display trade history
                 displayTradeHistory(selectedBots, startDate, endDate);
                 
-                console.log('Calculation complete!');
-                
             } catch (error) {
                 console.error('Error calculating portfolio:', error);
-                alert('Error calculating portfolio. Check the browser console (F12) for details. Error: ' + error.message);
+                alert('Error calculating portfolio: ' + error.message);
             }
         }
         
         function combineEquityCurves(selectedBots, startDate, endDate) {
-            // Equal weight portfolio: each bot gets (1/N) of the capital
-            // Portfolio value at time t = sum of (1/N * capital * return_of_bot_i)
-            
             const botMaps = {};
             const botStartingEquity = {};
             
@@ -622,9 +604,7 @@
                     }
                 });
                 
-                // Calculate portfolio equity
-                // For each bot: (current_equity / starting_equity) gives you the multiplier
-                // Average the multipliers for equal weight
+                // Calculate portfolio equity - average the multipliers for equal weight
                 let totalMultiplier = 0;
                 selectedBots.forEach(botName => {
                     const multiplier = lastKnownEquity[botName] / botStartingEquity[botName];
@@ -655,47 +635,128 @@
                 };
             }
             
-            // Total return - FROM START OF SELECTED RANGE TO END
+            // Total return
             const startEquity = equity[0];
             const finalEquity = equity[equity.length - 1];
             const totalReturn = ((finalEquity / startEquity - 1) * 100).toFixed(2);
             
-            // Max drawdown - calculated from the selected date range
-            let peak = equity[0];
-            let maxDD = 0;
+            // Max drawdown
+            let maxEquity = equity[0];
+            let maxDrawdown = 0;
             
-            equity.forEach(e => {
-                if (e > peak) peak = e;
-                const dd = ((e - peak) / peak) * 100;
-                if (dd < maxDD) maxDD = dd;
+            equity.forEach(eq => {
+                if (eq > maxEquity) maxEquity = eq;
+                const drawdown = ((eq - maxEquity) / maxEquity) * 100;
+                if (drawdown < maxDrawdown) maxDrawdown = drawdown;
             });
             
-            // Annualized return - based on actual time period
-            const startDate = new Date(dates[0]);
-            const endDate = new Date(dates[dates.length - 1]);
-            const years = (endDate - startDate) / (365.25 * 24 * 60 * 60 * 1000);
-            const annualized = years > 0 ? (Math.pow(finalEquity / startEquity, 1/years) - 1) * 100 : 0;
+            // Annualized return
+            const startDateObj = new Date(dates[0]);
+            const endDateObj = new Date(dates[dates.length - 1]);
+            const years = (endDateObj - startDateObj) / (365.25 * 24 * 60 * 60 * 1000);
+            const annualized = years > 0 ? (Math.pow(finalEquity / startEquity, 1 / years) - 1) * 100 : 0;
             
-            // Approximate Sharpe (using daily returns)
+            // Sharpe ratio (simplified)
             const returns = [];
             for (let i = 1; i < equity.length; i++) {
-                returns.push((equity[i] / equity[i-1]) - 1);
+                returns.push((equity[i] / equity[i-1] - 1) * 100);
             }
-            
-            const avgReturn = returns.length > 0 ? returns.reduce((a, b) => a + b, 0) / returns.length : 0;
-            const variance = returns.length > 0 ? returns.reduce((a, b) => a + Math.pow(b - avgReturn, 2), 0) / returns.length : 0;
-            const stdDev = Math.sqrt(variance);
-            const sharpe = stdDev > 0 ? (avgReturn / stdDev) * Math.sqrt(252) : 0; // Annualized
+            const avgReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
+            const stdDev = Math.sqrt(returns.reduce((sum, r) => sum + Math.pow(r - avgReturn, 2), 0) / returns.length);
+            const sharpe = stdDev > 0 ? (avgReturn / stdDev * Math.sqrt(252)).toFixed(2) : '0.00';
             
             return {
-                totalReturn,
-                maxDrawdown: maxDD.toFixed(2),
+                totalReturn: totalReturn,
+                maxDrawdown: maxDrawdown.toFixed(2),
                 annualized: annualized.toFixed(2),
-                sharpe: sharpe.toFixed(2),
-                finalValue: (startingCapital * (finalEquity / startEquity)).toFixed(2)
+                sharpe: sharpe,
+                finalValue: (startingCapital * finalEquity / startEquity).toFixed(2)
             };
         }
         
+        function displayMetrics(metrics) {
+            document.getElementById('totalReturn').textContent = metrics.totalReturn + '%';
+            document.getElementById('totalReturn').className = 'metric-value ' + 
+                (parseFloat(metrics.totalReturn) >= 0 ? 'positive' : 'negative');
+            
+            document.getElementById('maxDrawdown').textContent = metrics.maxDrawdown + '%';
+            document.getElementById('annualized').textContent = metrics.annualized + '%';
+            document.getElementById('annualized').className = 'metric-value ' + 
+                (parseFloat(metrics.annualized) >= 0 ? 'positive' : 'negative');
+            
+            document.getElementById('sharpe').textContent = metrics.sharpe;
+            
+            const startingCap = parseFloat(document.getElementById('startingCapital').value);
+            document.getElementById('startingCapitalDisplay').textContent = '$' + startingCap.toLocaleString();
+            document.getElementById('finalValue').textContent = '$' + parseFloat(metrics.finalValue).toLocaleString();
+        }
+        
+        function updateChart(portfolioData) {
+            const ctx = document.getElementById('equityChart').getContext('2d');
+            
+            if (equityChart) {
+                equityChart.destroy();
+            }
+            
+            equityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: portfolioData.dates,
+                    datasets: [{
+                        label: 'Portfolio Equity',
+                        data: portfolioData.equity,
+                        borderColor: '#D4AF37',
+                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1,
+                        pointRadius: 0,
+                        pointHoverRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(26, 26, 46, 0.9)',
+                            titleColor: '#D4AF37',
+                            bodyColor: '#e0e0e0',
+                            borderColor: '#D4AF37',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(212, 175, 55, 0.1)'
+                            },
+                            ticks: {
+                                color: '#a0a0a0',
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(212, 175, 55, 0.1)'
+                            },
+                            ticks: {
+                                color: '#a0a0a0',
+                                callback: function(value) {
+                                    return value.toFixed(2) + 'x';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
         
         function displayTradeHistory(selectedBots, startDate, endDate) {
             const tbody = document.getElementById('tradeHistoryBody');
@@ -719,7 +780,7 @@
                             date: date,
                             bot: botName,
                             botLabel: bot.label,
-                            type: pnlPercent >= 0 ? 'LONG' : 'LONG', // Assume all longs for now
+                            type: 'LONG',
                             entry: prevEquity.toFixed(4),
                             exit: currentEquity.toFixed(4),
                             pnl: pnlPercent.toFixed(2)
@@ -738,7 +799,7 @@
             if (recentTrades.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align: center; padding: 20px; color: #888;">
+                        <td colspan="6" class="empty-state">
                             No trades found in selected date range
                         </td>
                     </tr>
@@ -748,124 +809,17 @@
             
             tbody.innerHTML = recentTrades.map(trade => `
                 <tr>
-                    <td>${trade.date}</td>
+                    <td class="trade-date">${trade.date}</td>
                     <td class="trade-bot">${trade.botLabel}</td>
-                    <td class="trade-type-long">${trade.type}</td>
+                    <td><span class="trade-type long">${trade.type}</span></td>
                     <td>${trade.entry}</td>
                     <td>${trade.exit}</td>
-                    <td class="${trade.pnl >= 0 ? 'trade-pnl-positive' : 'trade-pnl-negative'}">
-                        ${trade.pnl >= 0 ? '+' : ''}${trade.pnl}%
+                    <td class="trade-pnl ${parseFloat(trade.pnl) >= 0 ? 'positive' : 'negative'}">
+                        ${parseFloat(trade.pnl) >= 0 ? '+' : ''}${trade.pnl}%
                     </td>
                 </tr>
             `).join('');
         }
-        
-function displayMetrics(metrics) {
-            document.getElementById('totalReturn').textContent = metrics.totalReturn + '%';
-            document.getElementById('maxDrawdown').textContent = metrics.maxDrawdown + '%';
-            document.getElementById('annualized').textContent = metrics.annualized + '%';
-            document.getElementById('sharpe').textContent = metrics.sharpe;
-            document.getElementById('finalValue').textContent = '$' + Number(metrics.finalValue).toLocaleString();
-            document.getElementById('startingCap').textContent = '$' + Number(document.getElementById('startingCapital').value).toLocaleString();
-            
-            // Color coding
-            const totalReturnEl = document.getElementById('totalReturn');
-            totalReturnEl.className = 'metric-value ' + (parseFloat(metrics.totalReturn) > 0 ? 'positive' : 'negative');
-            
-            const annualizedEl = document.getElementById('annualized');
-            annualizedEl.className = 'metric-value ' + (parseFloat(metrics.annualized) > 0 ? 'positive' : 'negative');
-        }
-        
-        function updateChart(portfolioData) {
-            const ctx = document.getElementById('equityChart').getContext('2d');
-            
-            if (chart) {
-                chart.destroy();
-            }
-            
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: portfolioData.dates,
-                    datasets: [{
-                        label: 'Portfolio Value',
-                        data: portfolioData.equity,
-                        borderColor: 'rgba(212, 175, 55, 1)',
-                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.1,
-                        pointRadius: 0,
-                        pointHoverRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            callbacks: {
-                                label: function(context) {
-                                    const value = context.parsed.y;
-                                    const returnPct = ((value - 1) * 100).toFixed(2);
-                                    return `Equity: ${value.toFixed(3)}x (${returnPct}%)`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            display: true,
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            ticks: {
-                                color: '#a0a0a0',
-                                maxRotation: 45,
-                                minRotation: 45
-                            }
-                        },
-                        y: {
-                            display: true,
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            ticks: {
-                                color: '#a0a0a0',
-                                callback: function(value) {
-                                    return value.toFixed(2) + 'x';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Set default date range based on available data
-        window.onload = function() {
-            // Check if botData loaded
-            if (typeof botData === 'undefined') {
-                alert('Error: Bot data failed to load. Make sure botData.js is in the same folder as this HTML file.');
-                console.error('botData is not defined!');
-                return;
-            }
-            
-            console.log('Bot data loaded successfully!');
-            console.log('Available bots:', Object.keys(botData));
-            
-            // Find most common start date across all bots
-            const allStartDates = Object.values(botData).map(bot => bot.dates[0]).sort();
-            const mostRecentStart = allStartDates[allStartDates.length - 1];
-            
-            console.log('Setting default start date to:', mostRecentStart);
-            document.getElementById('startDate').value = mostRecentStart;
-        };
     </script>
 </body>
 </html>
