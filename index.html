@@ -186,6 +186,100 @@
             gap: 15px;
             margin-top: 20px;
         }
+
+        .trade-history {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .trade-history::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .trade-history::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        
+        .trade-history::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.5);
+            border-radius: 4px;
+        }
+        
+        .trade-history::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.7);
+        }
+        
+        .trade-history-title {
+            color: #D4AF37;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .trade-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        
+        .trade-table thead {
+            position: sticky;
+            top: 0;
+            background: rgba(26, 26, 46, 0.95);
+            z-index: 10;
+        }
+        
+        .trade-table th {
+            padding: 12px 8px;
+            text-align: left;
+            color: #D4AF37;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .trade-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .trade-table tr:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .trade-bot {
+            font-weight: 600;
+            color: #D4AF37;
+        }
+        
+        .trade-type-long {
+            color: #4caf50;
+            font-weight: 600;
+        }
+        
+        .trade-type-short {
+            color: #f44336;
+            font-weight: 600;
+        }
+        
+        .trade-pnl-positive {
+            color: #4caf50;
+            font-weight: 600;
+        }
+        
+        .trade-pnl-negative {
+            color: #f44336;
+            font-weight: 600;
+        }
+
         
         .metric-card {
             background: rgba(255, 255, 255, 0.05);
@@ -391,7 +485,30 @@
                         <div class="metric-label">Final Value</div>
                         <div class="metric-value positive" id="finalValue">-</div>
                     </div>
-                </div>
+                
+                
+                <div class="trade-history-title">📋 Trade History (Last 50 Trades)</div>
+                <div class="trade-history">
+                    <table class="trade-table" id="tradeHistoryTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Bot</th>
+                                <th>Type</th>
+                                <th>Entry</th>
+                                <th>Exit</th>
+                                <th>P&L %</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tradeHistoryBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 20px; color: #888;">
+                                    Select bots and calculate portfolio to see trade history
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div></div>
             </div>
         </div>
     </div>
@@ -437,6 +554,11 @@
                 // Calculate and display metrics
                 const metrics = calculateMetrics(portfolioData, startingCapital);
                 displayMetrics(metrics);
+                
+                
+                
+                // Display trade history
+                displayTradeHistory(selectedBots, startDate, endDate);
                 
                 console.log('Calculation complete!');
                 
@@ -574,7 +696,71 @@
             };
         }
         
-        function displayMetrics(metrics) {
+        
+        function displayTradeHistory(selectedBots, startDate, endDate) {
+            const tbody = document.getElementById('tradeHistoryBody');
+            const allTrades = [];
+            
+            // Collect all trades from selected bots
+            selectedBots.forEach(botName => {
+                const bot = botData[botName];
+                const dates = bot.dates;
+                const equity = bot.equity;
+                
+                // Create trade entries from equity curve
+                for (let i = 1; i < dates.length; i++) {
+                    const date = dates[i];
+                    if (date >= startDate && date <= endDate) {
+                        const prevEquity = equity[i-1];
+                        const currentEquity = equity[i];
+                        const pnlPercent = ((currentEquity / prevEquity - 1) * 100);
+                        
+                        allTrades.push({
+                            date: date,
+                            bot: botName,
+                            botLabel: bot.label,
+                            type: pnlPercent >= 0 ? 'LONG' : 'LONG', // Assume all longs for now
+                            entry: prevEquity.toFixed(4),
+                            exit: currentEquity.toFixed(4),
+                            pnl: pnlPercent.toFixed(2)
+                        });
+                    }
+                }
+            });
+            
+            // Sort by date descending (newest first)
+            allTrades.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Take last 50 trades
+            const recentTrades = allTrades.slice(0, 50);
+            
+            // Populate table
+            if (recentTrades.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 20px; color: #888;">
+                            No trades found in selected date range
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = recentTrades.map(trade => `
+                <tr>
+                    <td>${trade.date}</td>
+                    <td class="trade-bot">${trade.botLabel}</td>
+                    <td class="trade-type-long">${trade.type}</td>
+                    <td>${trade.entry}</td>
+                    <td>${trade.exit}</td>
+                    <td class="${trade.pnl >= 0 ? 'trade-pnl-positive' : 'trade-pnl-negative'}">
+                        ${trade.pnl >= 0 ? '+' : ''}${trade.pnl}%
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+function displayMetrics(metrics) {
             document.getElementById('totalReturn').textContent = metrics.totalReturn + '%';
             document.getElementById('maxDrawdown').textContent = metrics.maxDrawdown + '%';
             document.getElementById('annualized').textContent = metrics.annualized + '%';
